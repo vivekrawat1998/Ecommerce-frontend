@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+/* Add spacing for fixed header */
+body {
+    padding-top: 4rem;
+    @apply bg-neutral-50;
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Better focus outline */
+:focus-visible {
+    @apply outline-none ring-2 ring-indigo-500 ring-offset-2;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    @apply bg-neutral-100;
+}
+
+::-webkit-scrollbar-thumb {
+    @apply bg-gradient-to-b from-indigo-500 to-pink-500 rounded-full;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+    @apply text-neutral-800;
+}
+
+/* Button hover effect */
+button {
+    @apply transform transition-transform active:scale-95;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
