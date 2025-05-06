@@ -18,7 +18,7 @@ const Searchbar = () => {
 
     // Debug logs
     useEffect(() => {
-        console.log('Products:', products);
+        // console.log('Products:', products);
     }, [products]);
 
     const handleSearchChange = (e) => {

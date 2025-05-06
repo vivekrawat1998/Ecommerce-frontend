@@ -1,18 +1,7 @@
 import React from 'react'
 import { BiSolidCoupon } from "react-icons/bi";
 import { MdKeyboardArrowRight } from "react-icons/md";
-import { useSelector } from "react-redux";
-const PaymentSummary = () => {
-    const cartItems = useSelector((state) => state.cart.cart);
-
-    const totalPrice = cartItems.reduce(
-        (total, item) => total + item.price * item.quantity,
-        0
-    );
-
-    const discount = 0;
-    const deliveryCharges = 50;
-    const finalAmount = totalPrice - discount + deliveryCharges;
+const PaymentSummary = ({ totalPrice, finalAmount }) => {
     return (
         <div >
 
@@ -32,24 +21,24 @@ const PaymentSummary = () => {
                 <h3 className="text-xl font-bold mb-4">Payment Summary</h3>
                 <ul className="space-y-3 text-sm">
                     <li className="flex justify-between">
-                        <span>Price of ({cartItems.length}items)</span>
+                        {/* <span>Price of ({cartItems.length}items)</span> */}
                         <span>₹{totalPrice.toFixed(2)}</span>
                     </li>
                     <li className="flex justify-between">
                         <span>Discount</span>
-                        <span className="text-green-600">- ₹{discount.toFixed(2)}</span>
+                        {/* <span className="text-green-600">- ₹{discount?.toFixed(2)}</span> */}
                     </li>
                     <li className="flex justify-between">
                         <span>Delivery Charges</span>
-                        <span>₹{deliveryCharges.toFixed(2)}</span>
+                        {/* <span>₹{deliveryCharges?.toFixed(2)}</span> */}
                     </li>
                     <li className="flex justify-between font-semibold border-t pt-3">
                         <span>Total Amount</span>
-                        <span>₹{finalAmount.toFixed(2)}</span>
+                        <span>₹{finalAmount?.toFixed(2)}</span>
                     </li>
                     <li className="flex justify-between items-center pt-3 text-gray-500 text-sm">
                         <span>Items in Cart</span>
-                        <span>{cartItems.length} item(s)</span>
+                        {/* <span>{cartItems.length} item(s)</span> */}
                     </li>
                 </ul>
 

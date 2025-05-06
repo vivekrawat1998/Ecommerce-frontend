@@ -1,25 +1,38 @@
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Lottie from "lottie-react";
 import emptyCartAnimation from "../json/Animation - 1745315493319.json";
 
 import PaymentSummary from "../components/cart/PaymentSummary";
 import Mycart from "../components/cart/Mycart";
-import { fetchCart } from "../redux/thunks/AddtocartThunk";
+import axios from "axios";
+import { getUserData } from "../redux/thunks/AddtocartThunk";
+import Cookies from "js-cookie";
+
 
 const CartPage = () => {
-    const dispatch = useDispatch();
 
-    const { cart, loading, error } = useSelector((state) => state.cart);
+    const [cart, setCart] = React.useState([]);
 
     useEffect(() => {
-        dispatch(fetchCart());
-    }, [dispatch]);
+        const token = Cookies.get("token");
+        axios.get(`http://localhost:9878/api/v1/cart/user/${getUserData()?.userId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
+            .then((res) => {
+                setCart(res?.data?.cartList);
+            })
+            .catch((err) => {
+                const storedCart = JSON.parse(localStorage.getItem("guestCart")) || [];
+                setCart(storedCart);
+            });
+    }, []);
 
     const { totalPrice, finalAmount } = React.useMemo(() => {
-        const totalPrice = cart.reduce(
-            (total, item) => total + item.price * item.quantity,
+        const totalPrice = cart?.reduce(
+            (total, item) => total + item?.price * item?.quantity,
             0
         );
         const discount = 0;
@@ -29,17 +42,9 @@ const CartPage = () => {
         return { totalPrice, finalAmount };
     }, [cart]);
 
-    if (loading) {
-        return <div>Loading your cart...</div>;
-    }
-
-    if (error) {
-        return <div>Error loading cart: {error.message}</div>;
-    }
-
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-32 mb-10 grid grid-cols-1 md:grid-cols-12 gap-8">
-            {cart.length === 0 ? (
+            {cart?.length === 0 ? (
                 <div className="col-span-12 flex flex-col items-center justify-center w-full text-center space-y-6">
                     <div className="w-64 h-64">
                         <Lottie animationData={emptyCartAnimation} loop={true} />
@@ -58,7 +63,7 @@ const CartPage = () => {
             ) : (
                 <>
                     <div className="md:col-span-7 border border-gray-300 p-6 rounded-2xl bg-white shadow-sm">
-                        <Mycart />
+                        <Mycart cart={cart} />
                     </div>
                     <div className="md:col-span-5 space-y-6">
                         <PaymentSummary

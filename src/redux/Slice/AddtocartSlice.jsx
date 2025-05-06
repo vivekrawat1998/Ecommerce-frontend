@@ -5,6 +5,7 @@ import {
     removeFromCart,
     increaseQuantity,
     decreaseQuantity,
+    mergeGuestCartWithServer,
 } from "../thunks/AddtocartThunk";
 
 const initialState = {
@@ -39,7 +40,9 @@ const cartSlice = createSlice({
             .addCase(addToCart.fulfilled, (state, action) => {
                 state.cart = action.payload;
             })
-
+            .addCase(mergeGuestCartWithServer.fulfilled, (state, action) => {
+                state.cart = action.payload;
+            })
             .addCase(removeFromCart.fulfilled, (state, action) => {
                 state.cart = action.payload;
             })

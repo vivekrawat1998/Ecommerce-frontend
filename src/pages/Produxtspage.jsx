@@ -1,4 +1,4 @@
-import React,{ useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProductsByCategory, fetchAllProducts } from '../redux/thunks/Productthunks';
@@ -8,7 +8,6 @@ const ProductsPage = () => {
   const { slug } = useParams();
   const dispatch = useDispatch();
   const { products, loading, error } = useSelector(state => state.products);
-
   useEffect(() => {
     if (slug) {
       dispatch(fetchProductsByCategory(slug));

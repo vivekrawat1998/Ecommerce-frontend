@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import axiosInstance from '../utils/AxiosInstance'; // Import the custom axios instance
 import Cookies from 'js-cookie';
+import { useDispatch } from 'react-redux';
+import { mergeGuestCartWithServer } from '../redux/thunks/AddtocartThunk';
 
 const LoginPage = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -11,7 +13,7 @@ const LoginPage = () => {
     const [error, setError] = useState('');
     const navigate = useNavigate();
     const { loading } = useSelector(state => state.auth);
-
+    const dispatch = useDispatch();
     const togglePassword = () => setShowPassword(!showPassword);
 
     const handleChange = (e) => {
@@ -22,37 +24,36 @@ const LoginPage = () => {
         e.preventDefault();
         try {
             const res = await axiosInstance.post('/user/signin', form);
-            console.log("Login Response:", res.data); 
+            console.log("Login Response:", res.data);
 
             if (!res.data.error) {
-                // Store token and user info in cookies
                 const { token, refreshToken, user } = res.data;
-                
-                // Set token and refreshToken in cookies
-                Cookies.set('token', token, { expires: 1 / 24 }); // 1 hour expiry for access token
-                Cookies.set('refreshToken', refreshToken, { expires: 7 }); // 7 days expiry for refresh token
 
-                // Store user information in cookies (optional)
+                // Set cookies
+                Cookies.set('token', token, { expires: 1 / 24 });
+                Cookies.set('refreshToken', refreshToken, { expires: 7 });
                 Cookies.set('user', JSON.stringify(user));
 
-                // Set token to axios instance headers for future requests
+                // Set axios default header
                 axiosInstance.defaults.headers['Authorization'] = `Bearer ${token}`;
-
-                // Debugging: Check the token in the cookies and axios headers
                 console.log("Token in cookies:", Cookies.get('token'));
                 console.log("Axios Authorization header:", axiosInstance.defaults.headers['Authorization']);
 
-                // Call the profile API after login to fetch user details
+                // ✅ Fetch full user profile
                 const profileResponse = await axiosInstance.get("/user/profile");
                 console.log("Profile API Response:", profileResponse.data);
 
                 if (profileResponse.data) {
                     console.log("User Profile Data:", profileResponse.data);
-                    // Optionally store profile data in local storage or state if needed
+
+                    // ✅ Store profile first (so thunk can access it)
                     localStorage.setItem('userProfile', JSON.stringify(profileResponse.data));
+
+                    // ✅ Then dispatch the thunk
+                    dispatch(mergeGuestCartWithServer());
                 }
 
-                // Navigate to the home/dashboard page or any route
+                // ✅ Navigate to home
                 navigate('/');
             } else {
                 setError(res.data.message || 'Unknown error');
@@ -61,6 +62,7 @@ const LoginPage = () => {
             setError(err.response?.data?.message || 'An error occurred, please try again');
         }
     };
+
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-100 to-purple-100 p-6">

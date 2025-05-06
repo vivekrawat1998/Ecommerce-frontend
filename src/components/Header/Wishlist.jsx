@@ -12,7 +12,8 @@ const WishList = ({
     badgeStyle = 'absolute -top-1 -right-1'
 }) => {
 
-    const wishitems = useSelector((state) => state.wish.wish)
+    const wishitems = useSelector((state) => state?.wish?.wish)
+    console.log(wishitems)
     const totalcount = wishitems.length;
     return (
         <button

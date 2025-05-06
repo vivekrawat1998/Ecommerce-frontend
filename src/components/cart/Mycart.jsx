@@ -5,29 +5,29 @@ import { increaseQuantity, decreaseQuantity, removeFromCart } from "../../redux/
 import { FiTrash2 } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 
-const Mycart = () => {
-    const cartItems = useSelector((state) => state.cart.cart);
+const Mycart = ({ cart }) => {
     const dispatch = useDispatch();
+    const [loading, setLoading] = useState(false);
     const [removingItem, setRemovingItem] = useState(null);
 
-    const totalPrice = cartItems.reduce(
-        (total, item) => total + item.price * item.quantity,
+    const totalPrice = cart?.reduce(
+        (total, item) => total + item?.price * item?.quantity,
         0
     );
 
-    const handleRemove = (id) => {
+    const handleRemove = async (id) => {
         setRemovingItem(id);
-        setTimeout(() => {
-            dispatch(removeFromCart(id));
-            setRemovingItem(null);
-        }, 300);
+        setLoading(true);
+        await dispatch(removeFromCart(id));
+        setRemovingItem(null);
+        setLoading(false);
     };
 
     const handleQuantityChange = (action, id, currentQuantity) => {
         if (action === 'increase') {
-            dispatch(increaseQuantity(id)); 
+            dispatch(increaseQuantity(id));
         } else if (action === 'decrease' && currentQuantity > 1) {
-            dispatch(decreaseQuantity(id)); 
+            dispatch(decreaseQuantity(id));
         }
     };
 
@@ -38,7 +38,6 @@ const Mycart = () => {
             const validImage = images.find(img => img?.url);
             return validImage?.url || '/placeholder-image.jpg';
         }
-
         return images.url || images || '/placeholder-image.jpg';
     };
 
@@ -55,12 +54,12 @@ const Mycart = () => {
                     }}
                 >
                     <AnimatePresence>
-                        {cartItems.map((item) => {
+                        {cart?.map((item) => {
                             const imageUrl = getImageUrl(item.images);
 
                             return (
                                 <motion.li
-                                    key={item.productId} // Using productId for key consistency
+                                    key={item.productId} 
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, x: 50 }}
@@ -70,7 +69,7 @@ const Mycart = () => {
                                     <div className="flex items-center gap-4 flex-1 min-w-0">
                                         <ImageWithFallback
                                             images={item.images}
-                                            alt={item.productTitle} // Updated to match the prop name
+                                            alt={item.productTitle} 
                                             className="w-20 h-20 object-contain border rounded-md"
                                             loading="lazy"
                                         />
@@ -101,12 +100,13 @@ const Mycart = () => {
                                         </div>
 
                                         <p className="text-lg font-semibold text-gray-800 min-w-[100px] text-right">
-                                            ₹{(item.price * item.quantity).toFixed(2)}
+                                            ₹{(item?.price * item?.quantity).toFixed(2)}
                                         </p>
 
                                         <button
-                                            onClick={() => handleRemove(item.productId)} // Use productId
+                                            onClick={() => handleRemove(item.productId)}
                                             className="text-red-500 hover:text-red-700 transition-colors"
+                                            disabled={removingItem === item?.productId || loading}
                                         >
                                             <FiTrash2 size={20} />
                                         </button>
@@ -118,7 +118,7 @@ const Mycart = () => {
                 </div>
 
                 <div className="mt-6 text-right text-lg font-semibold text-gray-700">
-                    Total: ₹{totalPrice.toFixed(2)}
+                    Total: ₹{totalPrice?.toFixed(2)}
                 </div>
             </div>
         </div>
