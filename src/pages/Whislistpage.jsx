@@ -5,6 +5,7 @@ import { getUserData } from '../redux/thunks/AddtocartThunk';
 import Cookies from 'js-cookie';
 import { useDispatch } from 'react-redux';
 import { removeFromWishlist } from '../redux/thunks/AddwhishlistThunk';
+import { fetchAllProducts } from '../redux/thunks/Productthunks';
 
 const Whislistpage = () => {
     const [wish, setWish] = useState([]);
@@ -23,10 +24,8 @@ const Whislistpage = () => {
 
             const wishlistItems = res?.data?.wishlist || [];
             console.log(wishlistItems)
-
-
-
             setWish(wishlistItems);
+            dispatch(fetchAllProducts())
         } catch (err) {
             const storedWish = JSON.parse(localStorage.getItem("guestWish")) || [];
             setWish(storedWish);

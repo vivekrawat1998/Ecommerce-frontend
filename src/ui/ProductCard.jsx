@@ -5,21 +5,24 @@ import { useDispatch } from 'react-redux';
 import { addToWishlist, removeFromWishlist } from '../redux/thunks/AddwhishlistThunk';
 import ImageWithFallback from './Imagewithfallback';
 import { fetchAllProducts } from '../redux/thunks/Productthunks';
+import { Link } from 'react-router-dom';
 
 const ProductCard = ({ product, showAddToCart = true, showbadge = true, showRating = true, handleRemove }) => {
 
     const dispatch = useDispatch();
     const [isWishlisted, setIsWishlisted] = useState(false);
 
+
     const formattedProduct = useMemo(() => ({
         ...product,
         id: product._id || product.id,
         rating: product.rating?.toFixed?.(1) || '0.0',
         price: Math.floor(product?.price) || 0,
-        title:  product.title,
+        title: product.title,
         description: product.description || '',
-        images:  product.images,
+        images: product.images,
     }), [product]);
+
 
     const stockCount = formattedProduct.countInStock ?? formattedProduct.stock ?? 0;
 
@@ -28,13 +31,24 @@ const ProductCard = ({ product, showAddToCart = true, showbadge = true, showRati
             dispatch(removeFromWishlist(formattedProduct.id));
         } else {
             dispatch(addToWishlist(formattedProduct));
-            dispatch(fetchAllProducts())
+            // dispatch(fetchAllProducts())
         }
         setIsWishlisted(!isWishlisted);
     };
 
     return (
-        <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden relative group">
+        <div
+
+            onClick={() => {
+                const existing = JSON.parse(localStorage.getItem('recentlyViewed') || '[]');
+
+                const filtered = existing.filter(p => p.id !== formattedProduct.id);
+                const updated = [formattedProduct, ...filtered].slice(0, 10);
+
+                localStorage.setItem('recentlyViewed', JSON.stringify(updated));
+            }}
+            className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden relative group"
+        >
             <div className="relative">
                 <ImageWithFallback
                     images={formattedProduct.images}
@@ -65,9 +79,9 @@ const ProductCard = ({ product, showAddToCart = true, showbadge = true, showRati
                 )}
             </div>
 
-            <div className="p-4">
+            <Link to={`/product/${formattedProduct.id}`} className="p-4">
                 <h2 className="text-lg font-bold text-gray-900 truncate mb-1">
-                    {formattedProduct.title || product.name}
+                    {formattedProduct.title || formattedProduct.name}
                 </h2>
                 <p className="text-sm text-gray-600 line-clamp-2 mb-3">
                     {formattedProduct.description}
@@ -81,7 +95,9 @@ const ProductCard = ({ product, showAddToCart = true, showbadge = true, showRati
                         {stockCount} in stock
                     </span>
                 </div>
+            </Link>
 
+            <div>
                 {showAddToCart ? (
                     <AdtocartButton product={formattedProduct} />
                 ) : (

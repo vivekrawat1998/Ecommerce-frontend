@@ -7,6 +7,8 @@ import Categories from "../categories/Categories"
 import Location from './Location'
 import { Link } from 'react-router-dom'
 import LogoutButton from '../../ui/Logoutbutton'
+import LoginButton from '../../ui/Loginbutton'
+import LogoutButt from '../../ui/Logoutbutt'
 const Navbar = () => {
     return (
         <>
@@ -33,6 +35,7 @@ const Navbar = () => {
                                 <Login />
                             </Link>
                             <LogoutButton />
+                            <LoginButton />
                         </div>
                     </div>
 

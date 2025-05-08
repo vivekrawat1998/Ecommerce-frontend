@@ -8,7 +8,6 @@ import {
   fetchSingleProducts,
   fetchFeaturedProducts
 } from "../thunks/Productthunks";
-
 const productSlice = createSlice({
   name: "products",
   initialState: {
@@ -25,7 +24,6 @@ const productSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-
     builder
       .addCase(fetchAllProducts.fulfilled, (state, action) => {
         state.products = action.payload;

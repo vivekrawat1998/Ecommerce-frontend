@@ -7,13 +7,10 @@ export const getUserData = () => JSON.parse(localStorage?.getItem("userProfile")
 console.log("User Data:", getUserData());
 const isLoggedIn = () => !!getUserData();
 
-// ✅ Load user's cart
 export const fetchCart = createAsyncThunk("cart/fetch", async () => {
     const token = Cookies.get("token");
-    // console.log("Token:", token);
     if (isLoggedIn() && token) {
         const res = await axiosInstance.get(`/cart/user/${getUserData()?.userId}`);
-        // console.log("Fetched Cart:", res.data);
         return res.data;
 
     } else {
@@ -22,13 +19,10 @@ export const fetchCart = createAsyncThunk("cart/fetch", async () => {
     }
 });
     
-// ✅ Add item to cart (for logged-in user only)
-// ✅ Add item to cart (handles both logged-in and guest users)
 export const addToCart = createAsyncThunk(
     "cart/addToCart",
     async (product, { getState }) => {
         const userId = getUserData()?.userId;
-        // console.log("User ID:", userId);
         const { cart } = getState().cart;
 
         const existing = cart.find((item) => item.productId === product.id);
@@ -42,13 +36,11 @@ export const addToCart = createAsyncThunk(
             quantity,
         };
         if (userId) {
-            // ✅ This part will NOT run
             await axiosInstance.post("/cart/add", {
                 ...formattedProduct,
                 userId,
             });
         } else {
-            // ✅ This WILL run for guest users
             const guestCart = JSON.parse(localStorage.getItem("guestCart")) || [];
         
             const updatedGuestCart = existing
@@ -70,7 +62,6 @@ export const addToCart = createAsyncThunk(
     }
 );
 
-// ✅ Merge guest cart into server cart after login
 export const mergeGuestCartWithServer = createAsyncThunk(
     "cart/mergeGuestCart",
     async () => {
@@ -98,7 +89,6 @@ export const mergeGuestCartWithServer = createAsyncThunk(
     }
 );
 
-// ✅ Remove item from cart
 export const removeFromCart = createAsyncThunk(
     "cart/remove",
     async (productId, { getState }) => {
@@ -117,7 +107,6 @@ export const removeFromCart = createAsyncThunk(
     }
 );
 
-// ✅ Increase quantity
 export const increaseQuantity = createAsyncThunk(
     "cart/increaseQuantity",
     async (productId, { getState }) => {
@@ -150,7 +139,6 @@ export const increaseQuantity = createAsyncThunk(
     }
 );
 
-// ✅ Decrease quantity
 export const decreaseQuantity = createAsyncThunk(
     "cart/decreaseQuantity",
     async (productId, { getState }) => {

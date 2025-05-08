@@ -22,17 +22,17 @@ const wishSlice = createSlice({
   extraReducers: (builder) => {
     builder
       // .addCase(fetchwish.pending, (state) => {
-      //     state.loading = true;
-      //     state.error = null;
+      //   state.loading = true;
+      //   state.error = null;
       // })
       // .addCase(fetchwish.fulfilled, (state, action) => {
-      //     state.loading = false;
-      //     state.wish = action.payload;
-      //     state.error = null;
+      //   state.loading = false;
+      //   state.wish = action.payload;
+      //   state.error = null;
       // })
       // .addCase(fetchwish.rejected, (state, action) => {
-      //     state.loading = false;
-      //     state.error = action.payload;
+      //   state.loading = false;
+      //   state.error = action.payload;
       // })
       .addCase(addToWishlist.fulfilled, (state, action) => {
         state.wish = action.payload;

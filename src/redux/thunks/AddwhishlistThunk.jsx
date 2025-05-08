@@ -2,9 +2,10 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../utils/AxiosInstance";
 import { getImageUrl } from "../../utils/Getimagurl";
 
+
 export const getUserData = () => JSON.parse(localStorage?.getItem("userProfile"));
-// console.log("User Data:", getUserData());
-// const isLoggedIn = () => !!getUserData();
+console.log("User Data:", getUserData());
+const isLoggedIn = () => !!getUserData();
 
 // ✅ Load user's wish
 // export const fetchwish = createAsyncThunk("wish/fetch", async () => {
@@ -21,8 +22,6 @@ export const getUserData = () => JSON.parse(localStorage?.getItem("userProfile")
 //     }
 // });
 
-// ✅ Add item to wish (for logged-in user only)
-// ✅ Add item to wish (handles both logged-in and guest users)
 export const addToWishlist = createAsyncThunk(
     "wish/adToWhislist",
     async (product, { getState }) => {
@@ -37,7 +36,6 @@ export const addToWishlist = createAsyncThunk(
 
       
       if (userId) {
-          // ✅ Logged-in user: send to backend
           await axiosInstance.post("/wish/add", {
           ...formattedProduct,
           userId,
@@ -45,7 +43,6 @@ export const addToWishlist = createAsyncThunk(
         
         return [...getState().wish.wish, { ...product, productId: product.id }];
     } else {
-        // ✅ Guest user: use localStorage
         const guestWish = JSON.parse(localStorage.getItem("guestWish")) || [];
         
         console.log(formattedProduct)
@@ -53,20 +50,18 @@ export const addToWishlist = createAsyncThunk(
   
         let updatedGuestWish;
         if (existing) {
-          updatedGuestWish = guestWish; // Don't add duplicate
+          updatedGuestWish = guestWish;
         } else {
           updatedGuestWish = [...guestWish, formattedProduct];
         }
   
         localStorage.setItem("guestWish", JSON.stringify(updatedGuestWish));
-  
         return updatedGuestWish;
       }
     }
   );
   
 
-// ✅ Merge guest wish into server wish after login
 export const mergeGuestWishWithServer = createAsyncThunk(
     "wish/mergeGuestWish",
     async () => {
@@ -93,7 +88,6 @@ export const mergeGuestWishWithServer = createAsyncThunk(
     }
 );
 
-// ✅ Remove item from wish
 export const removeFromWishlist = createAsyncThunk(
     "wish/remove",
     async (productId, { getState }) => {

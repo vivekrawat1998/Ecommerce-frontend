@@ -10,6 +10,8 @@ import CartPage from './pages/Cartpage'
 import Whislistpage from './pages/Whislistpage'
 import Loginpage from './pages/Loginpage'
 import LogoutButton from './ui/Logoutbutton'
+import Productdesc from './components/Productsdetails/Productsdesc'
+import Productdetails from './pages/Productdetails'
 
 function App() {
   return (
@@ -20,11 +22,13 @@ function App() {
             <Route index element={<Homepage />} />
             <Route path="products" element={<Produxtspage />} />
             <Route path="/login" element={<Loginpage />} />
-            <Route path="/logout" element={<LogoutButton/>} />
+            <Route path="/logout" element={<LogoutButton />} />
             <Route path="products/category/:slug" element={<Produxtspage />} />
             <Route path="/products/item/:id" element={<Singleproduct />} />
             <Route path="/cartpage" element={<CartPage />} />
             <Route path="/wishlist" element={<Whislistpage />} />
+            <Route path="/product/:id" element={<Productdetails />} />
+
           </Route>
         </Routes>
       </div>

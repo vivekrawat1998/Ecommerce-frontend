@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import axiosInstance from '../utils/AxiosInstance'; // Import the custom axios instance
+import axiosInstance from '../utils/AxiosInstance';
 import Cookies from 'js-cookie';
 import { useDispatch } from 'react-redux';
 import { mergeGuestCartWithServer } from '../redux/thunks/AddtocartThunk';
